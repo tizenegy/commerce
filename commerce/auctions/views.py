@@ -3,13 +3,21 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-
+from django import forms
 from .models import User
 
+class NewListingForm(forms.Form):
+    title = forms.CharField(label="", widget=forms.TextInput(attrs={'placeholder':'Title'}))
+    description = forms.CharField(label="", widget=forms.Textarea(attrs={'placeholder':'Description'}))
+    starting_bid = forms.DecimalField(label="", widget=forms.DecimalField())
+    image_url = forms.URLField()
+    category = forms.ChoiceField()
 
 def index(request):
     return render(request, "auctions/index.html")
 
+def new_listing(request):
+    return render(request, "auctions/new_listing.html")
 
 def login_view(request):
     if request.method == "POST":
