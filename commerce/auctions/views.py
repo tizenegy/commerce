@@ -9,15 +9,16 @@ from .models import User
 class NewListingForm(forms.Form):
     title = forms.CharField(label="", widget=forms.TextInput(attrs={'placeholder':'Title'}))
     description = forms.CharField(label="", widget=forms.Textarea(attrs={'placeholder':'Description'}))
-    starting_bid = forms.DecimalField(label="", widget=forms.DecimalField())
-    image_url = forms.URLField()
-    category = forms.ChoiceField()
-
+    starting_bid = forms.DecimalField(label="Starting Bid")
+    image_url = forms.URLField(label="Image URL")
+    # category = forms.ModelChoiceField(label="Category", queryset=Category())
 def index(request):
     return render(request, "auctions/index.html")
 
 def new_listing(request):
-    return render(request, "auctions/new_listing.html")
+    return render(request, "auctions/new_listing.html", {
+        "new_listing_form": NewListingForm()
+    })
 
 def login_view(request):
     if request.method == "POST":
