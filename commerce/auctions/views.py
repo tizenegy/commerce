@@ -49,6 +49,15 @@ def new_listing(request):
             listing.image_url = form.cleaned_data["image_url"]
             listing.category = form.cleaned_data["category"]
             Listing.save(listing)
+            return render(request, "auctions/index.html", {
+                "new_listing_form": NewListingForm(),
+                "message": "Succesfully created new listing."
+    })
+        else:
+            return render(request, "auctions/new_listing.html", {
+                "new_listing_form": NewListingForm(),
+                "message": "Invalid input, please try again."
+        })
     return render(request, "auctions/new_listing.html", {
         "new_listing_form": NewListingForm()
     })

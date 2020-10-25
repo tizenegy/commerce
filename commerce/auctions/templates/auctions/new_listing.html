@@ -2,6 +2,7 @@
 
 {% block body %}
     <h2>New Listing</h2>
+    {{ message }}
     <div class="form-group">
     <form action="{% url 'auction:new_listing' %}" method="POST">
     {% csrf_token %}
