@@ -4,14 +4,35 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django import forms
-from .models import User
+from .models import User, Category
 
 class NewListingForm(forms.Form):
-    title = forms.CharField(label="", widget=forms.TextInput(attrs={'placeholder':'Title'}))
-    description = forms.CharField(label="", widget=forms.Textarea(attrs={'placeholder':'Description'}))
-    starting_bid = forms.DecimalField(label="Starting Bid")
-    image_url = forms.URLField(label="Image URL")
-    # category = forms.ModelChoiceField(label="Category", queryset=Category())
+    title = forms.CharField(
+        label="", 
+        widget=forms.TextInput(attrs={'placeholder':'Title'}),
+        required=True
+        )
+    description = forms.CharField(
+        label="", 
+        widget=forms.Textarea(attrs={'placeholder':'Description'}),
+        required=True
+        )
+    starting_bid = forms.DecimalField(
+        label="",
+        widget=forms.NumberInput(attrs={'placeholder': 'Starting bid'}),
+        required=True
+        )
+    image_url = forms.URLField(
+        label="",
+        widget=forms.TextInput(attrs={'placeholder': 'Image URL'}),
+        required=False
+        )
+    category = forms.ModelChoiceField(
+        label="Category", 
+        queryset=Category.objects.all()
+        )
+
+
 def index(request):
     return render(request, "auctions/index.html")
 
