@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django import forms
-from .models import User, Category
+from .models import User, Category, Listing
 
 class NewListingForm(forms.Form):
     title = forms.CharField(
@@ -39,6 +39,16 @@ def index(request):
     return render(request, "auctions/index.html")
 
 def new_listing(request):
+    if request.method == "POST":
+        form = NewListingForm(request.POST)
+        if form.is_valid():
+            listing = Listing()
+            listing.title = form.cleaned_data["title"]
+            listing.description = form.cleaned_data["description"]
+            listing.starting_bid = form.cleaned_data["starting_bid"]
+            listing.image_url = form.cleaned_data["image_url"]
+            listing.category = form.cleaned_data["category"]
+            Listing.save(listing)
     return render(request, "auctions/new_listing.html", {
         "new_listing_form": NewListingForm()
     })

@@ -25,7 +25,6 @@ class Listing(models.Model):
         decimal_places=2
         )
     image_url = models.URLField(
-        max_length=256,
         null=True
         )
     category = models.ForeignKey(
