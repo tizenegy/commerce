@@ -11,11 +11,28 @@ class Category(models.Model):
         return f"{self.name}"
 
 class Listing(models.Model):
-    title = models.CharField(max_length=64)
-    description = models.TextField(max_length=1024)
-    starting_bid = models.DecimalField(max_digits=8, decimal_places=2)
-    image_url = models.URLField(max_length=256)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    title = models.CharField(
+        max_length=64,
+        null=False
+    )
+    description = models.TextField(
+        max_length=1024,
+        null=False
+        )
+    starting_bid = models.DecimalField(
+        max_digits=8,
+        null=False,
+        decimal_places=2
+        )
+    image_url = models.URLField(
+        max_length=256,
+        null=True
+        )
+    category = models.ForeignKey(
+        Category, 
+        on_delete=models.CASCADE,
+        null=True
+        )
     def __str__(self):
         return f"{self.title}"
 

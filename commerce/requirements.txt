@@ -1,0 +1,7 @@
+# Python37
+
+# Django-3.1.2
+Django
+
+# django_widget_tweaks-1.4.8-py2
+django-widget-tweaks

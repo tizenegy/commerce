@@ -3,9 +3,11 @@
 {% block body %}
     <h2>New Listing</h2>
     <div class="form-group">
-    <form>
+    <form action="{% url 'auction:new_listing' %}" method="POST">
     {% csrf_token %}
+    <div class="form-group">
     {{ new_listing_form.as_p }}
+    </div>
      <input class="btn btn-primary" type="submit" value="Submit">
     </form>
     </div>
