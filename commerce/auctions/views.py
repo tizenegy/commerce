@@ -6,6 +6,8 @@ from django.urls import reverse
 from django import forms
 from .models import User, Category, Listing
 
+no_image_placeholder = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/480px-No_image_available.svg.png"
+
 class NewListingForm(forms.Form):
     title = forms.CharField(
         label="", 
@@ -36,7 +38,10 @@ class NewListingForm(forms.Form):
 
 
 def index(request):
-    return render(request, "auctions/index.html")
+    all_listings = Listing.objects.all()
+    return render(request, "auctions/index.html", {
+        "listings": all_listings
+    })
 
 def new_listing(request):
     if request.method == "POST":
@@ -47,10 +52,14 @@ def new_listing(request):
             listing.description = form.cleaned_data["description"]
             listing.starting_bid = form.cleaned_data["starting_bid"]
             listing.image_url = form.cleaned_data["image_url"]
+            if listing.image_url == '':
+                listing.image_url = no_image_placeholder
             listing.category = form.cleaned_data["category"]
             Listing.save(listing)
+            all_listings = Listing.objects.all()
             return render(request, "auctions/index.html", {
                 "new_listing_form": NewListingForm(),
+                "listings": all_listings,
                 "message": "Succesfully created new listing."
     })
         else:

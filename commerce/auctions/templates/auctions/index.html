@@ -3,6 +3,26 @@
 {% block body %}
     <h2>Active Listings</h2>
     {{ message }}
-
-    TODO
+    <div class="cont">
+        {% comment %} <div class="card-group" style="margin: 20px"> {% endcomment %}
+            {% for listing in listings %}
+                {% comment %} <div class="col-sm-4" style="margin: 20px"> {% endcomment %}
+                    <div class="card" style="width: 18rem;">
+                        <img class="card-img-top" src="{{ listing.image_url }}" alt="Card image cap">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ listing.title }}</h5>
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">{{ listing.description }}</li>
+                            <li class="list-group-item">Current price: ${{ listing.starting_bid }}</li>
+                            <li class="list-group-item">Category: {{ listing.category }}</li>
+                        </ul>
+                        <div class="card-body">
+                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                        </div>
+                    </div>
+                {% comment %} </div> {% endcomment %}
+            {% endfor %}
+        {% comment %} </div> {% endcomment %}
+    </div>
 {% endblock %}
