@@ -1,3 +1,15 @@
 body {
     padding: 10px;
 }
+.listing-img {
+  width: 70%;
+}
+.mainContent, .sideContent {
+  float:left; 
+  display:inline; 
+  margin: 10px;
+}
+.listing-navbuttons {
+  margin-left: 0px;
+  margin-top: 90px;
+}

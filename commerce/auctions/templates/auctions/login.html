@@ -4,9 +4,11 @@
 
     <h2>Login</h2>
 
-    {% if message %}
-        <div>{{ message }}</div>
-    {% endif %}
+{% if message is not None %}
+    <div class="alert alert-info" role="alert">
+        {{ message }}
+    </div>
+{% endif %}
 
     <form action="{% url 'auction:login' %}" method="post">
         {% csrf_token %}

@@ -71,6 +71,35 @@ def new_listing(request):
         "new_listing_form": NewListingForm()
     })
 
+def bids(request):
+    # if request.method == "POST":
+    #     form = NewListingForm(request.POST)
+    #     if form.is_valid():
+    #         listing = Listing()
+    #         listing.title = form.cleaned_data["title"]
+    #         listing.description = form.cleaned_data["description"]
+    #         listing.starting_bid = form.cleaned_data["starting_bid"]
+    #         listing.image_url = form.cleaned_data["image_url"]
+    #         if listing.image_url == '':
+    #             listing.image_url = no_image_placeholder
+    #         listing.category = form.cleaned_data["category"]
+    #         Listing.save(listing)
+    #         all_listings = Listing.objects.all()
+    #         return render(request, "auctions/index.html", {
+    #             "new_listing_form": NewListingForm(),
+    #             "listings": all_listings,
+    #             "message": "Succesfully created new listing."
+    # })
+    #     else:
+    #         return render(request, "auctions/new_listing.html", {
+    #             "new_listing_form": NewListingForm(),
+    #             "message": "Invalid input, please try again."
+    #     })
+    # return render(request, "auctions/new_listing.html", {
+    #     "new_listing_form": NewListingForm()
+    # })
+    pass
+
 def login_view(request):
     if request.method == "POST":
 

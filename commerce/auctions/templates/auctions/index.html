@@ -2,7 +2,11 @@
 
 {% block body %}
     <h2>Active Listings</h2>
-    {{ message }}
+{% if message is not None %}
+    <div class="alert alert-info" role="alert">
+        {{ message }}
+    </div>
+{% endif %}
     <div class="card-columns">
         {% comment %} <div class="card-group" style="margin: 20px"> {% endcomment %}
             {% for listing in listings %}

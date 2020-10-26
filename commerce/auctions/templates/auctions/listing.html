@@ -1,20 +1,42 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-{{ message }}
+{% if message is not None %}
+    <div class="alert alert-info" role="alert">
+        {{ message }}
+    </div>
+{% endif %}
     <h2>{{ listing.title }} </h2>
-    <div>
+
+    <div class="listing-img">
         <img class="card-img-top" src="{{ listing.image_url }}" alt="Card image cap">
         <li class="list-group-item">{{ listing.description }}</li>
-        <li class="list-group-item">Current price: ${{ listing.starting_bid }}</li>
+        <li class="list-group-item">Current bid: ${{ listing.starting_bid }}</li>
         <li class="list-group-item">Category: {{ listing.category }}</li>
         <div class="card-body">
-            <a href="{% url 'auction:index' %}" class="btn btn-primary">Back to all listings</a>
-            {% if on_watchlist %}
-                <a href="{% url 'auction:watchlist' listing.id %}" class="btn btn-primary">Remove from watchlist</a>
-            {% else %}
-                <a href="{% url 'auction:watchlist' listing.id %}" class="btn btn-primary">Add to watchlist</a>
-            {% endif %}
+            <form action="{% url 'auction:bids' %}" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <div class="mainContent">
+                        <input class="form-control" type="number" min="1" step="any" name="bid" placeholder="Your bid in $">
+                    </div>
+                    <div class="sideContent">
+                        <input class="btn btn-primary" type="submit" value="Confirm">
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
+
+<div class="listing-navbuttons">
+    <a href="{% url 'auction:index' %}" class="btn btn-primary">Back to all listings</a>
+    {% if request.user.id is not None %}
+        {% if on_watchlist %}
+            <a href="{% url 'auction:watchlist' listing.id %}" class="btn btn-primary">Remove from watchlist</a>
+        {% else %}
+            <a href="{% url 'auction:watchlist' listing.id %}" class="btn btn-primary">Add to watchlist</a>
+        {% endif %}
+    {% endif %}
+</div>
+
 {% endblock %}
