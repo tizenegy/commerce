@@ -14,7 +14,7 @@ class Listing(models.Model):
     title = models.CharField(
         max_length=64,
         null=False
-    )
+        )
     description = models.TextField(
         max_length=1024,
         null=False
@@ -32,6 +32,7 @@ class Listing(models.Model):
         on_delete=models.CASCADE,
         null=True
         )
+    watchlists = models.ManyToManyField(User, blank=True, related_name="listings_on_watchlist")
     def __str__(self):
         return f"{self.title}"
 

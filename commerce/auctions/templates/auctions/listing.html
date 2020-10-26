@@ -8,5 +8,13 @@
         <li class="list-group-item">{{ listing.description }}</li>
         <li class="list-group-item">Current price: ${{ listing.starting_bid }}</li>
         <li class="list-group-item">Category: {{ listing.category }}</li>
+        <div class="card-body">
+            <a href="{% url 'auction:index' %}" class="btn btn-primary">Back to all listings</a>
+            {% if on_watchlist %}
+                <a href="{% url 'auction:watchlist' listing.id %}" class="btn btn-primary">Remove from watchlist</a>
+            {% else %}
+                <a href="{% url 'auction:watchlist' listing.id %}" class="btn btn-primary">Add to watchlist</a>
+            {% endif %}
+        </div>
     </div>
 {% endblock %}

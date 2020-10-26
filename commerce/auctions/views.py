@@ -124,6 +124,41 @@ def register(request):
 
 def listing(request, item_id):
     item = Listing.objects.get(pk=int(item_id))
+    user = request.user
+    if user.id is not None:
+        on_watchlist = item.watchlists.filter(pk=int(user.id)).exists()
+        return render(request, "auctions/listing.html", {
+            "listing": item,
+            "on_watchlist": on_watchlist
+        })
     return render(request, "auctions/listing.html", {
-        "listing": item
+        "listing": item,
+        "on_watchlist": False
+    })
+
+def watchlist(request, item_id):
+    item = Listing.objects.get(pk=int(item_id))
+    user = request.user
+    if user.id is not None:
+        on_watchlist = item.watchlists.filter(pk=int(user.id)).exists()
+        if on_watchlist:
+            item.watchlists.remove(user)
+            on_watchlist = False
+            return render(request, "auctions/listing.html", {
+                "listing": item,
+                "on_watchlist": on_watchlist,
+                "message": "Successfully removed from watchlist."
+            })
+        else:
+            item.watchlists.add(user)
+            on_watchlist = True
+            return render(request, "auctions/listing.html", {
+                "listing": item,
+                "on_watchlist": on_watchlist,
+                "message": "Successfully added to watchlist."
+            })
+    return render(request, "auctions/listing.html", {
+        "listing": item,
+        "on_watchlist": False,
+        "message": "Successfully added to watchlist."
     })
