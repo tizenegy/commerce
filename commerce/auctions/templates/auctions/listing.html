@@ -1,0 +1,12 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+{{ message }}
+    <h2>{{ listing.title }} </h2>
+    <div>
+        <img class="card-img-top" src="{{ listing.image_url }}" alt="Card image cap">
+        <li class="list-group-item">{{ listing.description }}</li>
+        <li class="list-group-item">Current price: ${{ listing.starting_bid }}</li>
+        <li class="list-group-item">Category: {{ listing.category }}</li>
+    </div>
+{% endblock %}
