@@ -55,9 +55,9 @@ class Bid(models.Model):
         decimal_places=2,
         default='0'
         )
-    # bid_datetime = models.DateTimeField(
-    #     auto_now_add=True
-    # )
+    bid_datetime = models.DateTimeField(
+        auto_now_add=True
+    )
 
 class Comment(models.Model):
     body = models.TextField(max_length=1024, default="")
