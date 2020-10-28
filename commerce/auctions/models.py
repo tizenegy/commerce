@@ -31,8 +31,25 @@ class Listing(models.Model):
     category = models.ForeignKey(
         Category, 
         on_delete=models.CASCADE,
-        null=True
+        null=True,
+        related_name="categories"
         )
+    owner = models.ForeignKey(
+        User, 
+        on_delete=models.CASCADE,
+        null=False,
+        related_name="owners"
+        )
+    winner = models.ForeignKey(
+        User, 
+        on_delete=models.DO_NOTHING,
+        null=True,
+        related_name="winner"
+        )
+    is_active = models.BooleanField(
+        null=False,
+        default = True
+    )
     watchlists = models.ManyToManyField(User, blank=True, related_name="listings_on_watchlist")
     bids = models.ManyToManyField(User, blank=True, through='Bid')
     def __str__(self):

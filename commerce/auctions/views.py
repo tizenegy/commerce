@@ -75,45 +75,42 @@ def new_listing(request):
 
 def bids(request, item_id):
     if request.method == "POST":
+        item = Listing.objects.get(pk=int(item_id))
         user = request.user
         if user.id is not None:
-            item = Listing.objects.get(pk=int(item_id))
             on_watchlist = item.watchlists.filter(pk=int(user.id)).exists()
             amount = Decimal(request.POST["bid"].strip(' "'))
             if amount > item.starting_bid:
                 former_bids = Bid.objects.filter(listing=item_id)
                 former_max_dict = former_bids.aggregate(Max('amount'))
-                former_max_bid = former_max_dict.get("amount__max")
-                if amount > former_max_bid:
+                former_max_bid = former_max_dict.get("amount__max", 0.00)
+                if former_max_bid is None or amount > former_max_bid:
                     bid = Bid()
                     bid.amount = amount
                     item.starting_bid = amount
+                    item.winner = user
                     bid.listing = item
                     bid.user = user
                     bid.save()
                     item.save()
-                    
-                    return render(request, "auctions/listing.html", {
-                        "listing": item,
-                        "on_watchlist": on_watchlist,
-                        "message": "Bid successfully placed."
-                    })
+                    message = "Bid successfully placed."
+                else:
+                    message = "There is a higher bid already in the database."
             else:
-                return render(request, "auctions/listing.html", {
-                    "listing": item,
-                    "on_watchlist": on_watchlist,
-                    "message": "Your bid must be higher than the current bid."
-                })
-
-    #     else:
-    #         return render(request, "auctions/new_listing.html", {
-    #             "new_listing_form": NewListingForm(),
-    #             "message": "Invalid input, please try again."
-    #     })
-    # return render(request, "auctions/new_listing.html", {
-    #     "new_listing_form": NewListingForm()
-    # })
-    
+                message = "Your bid must be higher than the current bid."
+        else:
+            message = "You must be logged in to place a bid."
+            on_watchlist = False
+    else:
+        all_listings = Listing.objects.all()
+        return render(request, "auctions/index.html", {
+            "listings": all_listings
+    })
+    return render(request, "auctions/listing.html", {
+        "listing": item,
+        "on_watchlist": on_watchlist,
+        "message": message
+        })
 
 def login_view(request):
     if request.method == "POST":
@@ -169,12 +166,24 @@ def register(request):
 def listing(request, item_id):
     item = Listing.objects.get(pk=int(item_id))
     user = request.user
-    if user.id is not None:
-        on_watchlist = item.watchlists.filter(pk=int(user.id)).exists()
-        return render(request, "auctions/listing.html", {
-            "listing": item,
-            "on_watchlist": on_watchlist
-        })
+    if request.method == "POST":
+        item = Listing.objects.get(pk=int(item_id))
+        user = request.user
+        if user.id is not None and item.id is not None:
+            item.is_active = False
+            item.save()
+            all_listings = Listing.objects.all()
+            return render(request, "auctions/index.html", {
+                "listings": all_listings
+            })
+    else:
+        item = Listing.objects.get(pk=int(item_id))
+        if user.id is not None:
+            on_watchlist = item.watchlists.filter(pk=int(user.id)).exists()
+            return render(request, "auctions/listing.html", {
+                "listing": item,
+                "on_watchlist": on_watchlist
+            })
     return render(request, "auctions/listing.html", {
         "listing": item,
         "on_watchlist": False

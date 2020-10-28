@@ -6,6 +6,17 @@
         {{ message }}
     </div>
 {% endif %}
+{% if not listing.is_active %}
+    <div class="alert alert-danger" role="alert">
+        Auction closed
+    </div>
+{% endif %}
+{% if not listing.is_active and user.id is listing.winner_id%}
+    <div class="alert alert-success" role="alert">
+        Congratulations, you won the auction for this listing!
+    </div>
+{% endif %}
+
     <h2>{{ listing.title }} </h2>
 
     <div class="listing-img">
@@ -14,6 +25,7 @@
         <li class="list-group-item">Current bid: ${{ listing.starting_bid }}</li>
         <li class="list-group-item">Category: {{ listing.category }}</li>
         <div class="card-body">
+            {% if request.user.id is not None and listing.is_active %}
             <form action="{% url 'auction:bids' listing.id %}" method="post">
                 {% csrf_token %}
                 <div class="form-group">
@@ -25,16 +37,23 @@
                     </div>
                 </div>
             </form>
+            {% endif %}
         </div>
     </div>
 
 <div class="listing-navbuttons">
     <a href="{% url 'auction:index' %}" class="btn btn-primary">Back to all listings</a>
-    {% if request.user.id is not None %}
+    {% if request.user.id is not None and listing.is_active %}
         {% if on_watchlist %}
             <a href="{% url 'auction:watchlist' listing.id %}" class="btn btn-primary">Remove from watchlist</a>
         {% else %}
             <a href="{% url 'auction:watchlist' listing.id %}" class="btn btn-primary">Add to watchlist</a>
+        {% endif %}
+        {% if request.user.id is listing.owner.id %}
+            <form action="{% url 'auction:listing' listing.id %}" method="post">
+                {% csrf_token %}
+                <input class="btn btn-primary" type="submit" value="Close this auction">
+            </form>
         {% endif %}
     {% endif %}
 </div>

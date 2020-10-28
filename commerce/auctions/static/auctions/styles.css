@@ -9,6 +9,11 @@ body {
   display:inline; 
   margin: 10px;
 }
+.wideContent {
+  float: right; 
+  display:inline; 
+  margin: 10px;
+}
 .listing-navbuttons {
   margin-left: 0px;
   margin-top: 90px;
