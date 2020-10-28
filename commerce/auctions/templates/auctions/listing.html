@@ -14,7 +14,7 @@
         <li class="list-group-item">Current bid: ${{ listing.starting_bid }}</li>
         <li class="list-group-item">Category: {{ listing.category }}</li>
         <div class="card-body">
-            <form action="{% url 'auction:bids' %}" method="post">
+            <form action="{% url 'auction:bids' listing.id %}" method="post">
                 {% csrf_token %}
                 <div class="form-group">
                     <div class="mainContent">

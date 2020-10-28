@@ -4,7 +4,9 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django import forms
-from .models import User, Category, Listing
+from .models import *
+from decimal import Decimal
+from django.db.models import Max
 
 no_image_placeholder = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/480px-No_image_available.svg.png"
 
@@ -71,25 +73,38 @@ def new_listing(request):
         "new_listing_form": NewListingForm()
     })
 
-def bids(request):
-    # if request.method == "POST":
-    #     form = NewListingForm(request.POST)
-    #     if form.is_valid():
-    #         listing = Listing()
-    #         listing.title = form.cleaned_data["title"]
-    #         listing.description = form.cleaned_data["description"]
-    #         listing.starting_bid = form.cleaned_data["starting_bid"]
-    #         listing.image_url = form.cleaned_data["image_url"]
-    #         if listing.image_url == '':
-    #             listing.image_url = no_image_placeholder
-    #         listing.category = form.cleaned_data["category"]
-    #         Listing.save(listing)
-    #         all_listings = Listing.objects.all()
-    #         return render(request, "auctions/index.html", {
-    #             "new_listing_form": NewListingForm(),
-    #             "listings": all_listings,
-    #             "message": "Succesfully created new listing."
-    # })
+def bids(request, item_id):
+    if request.method == "POST":
+        user = request.user
+        if user.id is not None:
+            item = Listing.objects.get(pk=int(item_id))
+            on_watchlist = item.watchlists.filter(pk=int(user.id)).exists()
+            amount = Decimal(request.POST["bid"].strip(' "'))
+            if amount > item.starting_bid:
+                former_bids = Bid.objects.filter(listing=item_id)
+                former_max_dict = former_bids.aggregate(Max('amount'))
+                former_max_bid = former_max_dict.get("amount__max")
+                if amount > former_max_bid:
+                    bid = Bid()
+                    bid.amount = amount
+                    item.starting_bid = amount
+                    bid.listing = item
+                    bid.user = user
+                    bid.save()
+                    item.save()
+                    
+                    return render(request, "auctions/listing.html", {
+                        "listing": item,
+                        "on_watchlist": on_watchlist,
+                        "message": "Bid successfully placed."
+                    })
+            else:
+                return render(request, "auctions/listing.html", {
+                    "listing": item,
+                    "on_watchlist": on_watchlist,
+                    "message": "Your bid must be higher than the current bid."
+                })
+
     #     else:
     #         return render(request, "auctions/new_listing.html", {
     #             "new_listing_form": NewListingForm(),
@@ -98,7 +113,7 @@ def bids(request):
     # return render(request, "auctions/new_listing.html", {
     #     "new_listing_form": NewListingForm()
     # })
-    pass
+    
 
 def login_view(request):
     if request.method == "POST":

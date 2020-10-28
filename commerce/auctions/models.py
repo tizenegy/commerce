@@ -58,6 +58,8 @@ class Bid(models.Model):
     bid_datetime = models.DateTimeField(
         auto_now_add=True
     )
+    def __str__(self):
+        return f"{self.amount}"
 
 class Comment(models.Model):
     body = models.TextField(max_length=1024, default="")
