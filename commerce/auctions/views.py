@@ -109,6 +109,7 @@ def bids(request, item_id):
     return render(request, "auctions/listing.html", {
         "listing": item,
         "on_watchlist": on_watchlist,
+        "comments": Comment.objects.filter(listing=item),
         "message": message
         })
 
@@ -183,10 +184,12 @@ def listing(request, item_id):
             on_watchlist = item.watchlists.filter(pk=int(user.id)).exists()
             return render(request, "auctions/listing.html", {
                 "listing": item,
+                "comments": Comment.objects.filter(listing=item),
                 "on_watchlist": on_watchlist
             })
     return render(request, "auctions/listing.html", {
         "listing": item,
+        "comments": Comment.objects.filter(listing=item),
         "on_watchlist": False
     })
 
@@ -201,6 +204,7 @@ def watchlist(request, item_id):
             return render(request, "auctions/listing.html", {
                 "listing": item,
                 "on_watchlist": on_watchlist,
+                "comments": Comment.objects.filter(listing=item),
                 "message": "Successfully removed from watchlist."
             })
         else:
@@ -209,11 +213,13 @@ def watchlist(request, item_id):
             return render(request, "auctions/listing.html", {
                 "listing": item,
                 "on_watchlist": on_watchlist,
+                "comments": Comment.objects.filter(listing=item),
                 "message": "Successfully added to watchlist."
             })
     return render(request, "auctions/listing.html", {
         "listing": item,
         "on_watchlist": False,
+        "comments": Comment.objects.filter(listing=item),
         "message": "Successfully added to watchlist."
     })
 
@@ -223,11 +229,11 @@ def comment(request, item_id):
         user = request.user
         if user.id is not None:
             on_watchlist = item.watchlists.filter(pk=int(user.id)).exists()
-            comment = request.POST["comment"]
+            cmt = request.POST["comment"]
             new_comment = Comment()
             new_comment.user = user
             new_comment.listing = item
-            new_comment.body = comment
+            new_comment.body = cmt
             new_comment.save()
             message = "Comment successfully posted."
         else:
@@ -235,6 +241,7 @@ def comment(request, item_id):
             on_watchlist = False
     return render(request, "auctions/listing.html", {
         "listing": item,
+        "comments": Comment.objects.filter(listing=item),
         "on_watchlist": on_watchlist,
         "message": message
         })
