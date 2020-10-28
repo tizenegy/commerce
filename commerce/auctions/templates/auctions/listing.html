@@ -58,4 +58,21 @@
     {% endif %}
 </div>
 
+<h2>Comments</h2>
+
+{% if listing.is_active %}
+    <form action="{% url 'auction:comment' listing.id %}" method="post">
+        {% csrf_token %}
+        <input class="form-control" type="text" name="comment" placeholder="Enter comment here">
+        <input class="btn btn-primary" type="submit" value="Post comment">
+    </form>
+{% endif %}
+
+{% comment %} {% for  in  %}
+    <div class="well">
+      ...
+    </div>
+{% endfor %} {% endcomment %}
+
+
 {% endblock %}

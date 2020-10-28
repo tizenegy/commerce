@@ -51,7 +51,8 @@ class Listing(models.Model):
         default = True
     )
     watchlists = models.ManyToManyField(User, blank=True, related_name="listings_on_watchlist")
-    bids = models.ManyToManyField(User, blank=True, through='Bid')
+    bids = models.ManyToManyField(User, blank=True, through='Bid', related_name="bids_on_listing")
+    comments = models.ManyToManyField(User, blank=True, through='Comment', related_name="comments_on_listing")
     def __str__(self):
         return f"{self.title}"
 
@@ -79,4 +80,23 @@ class Bid(models.Model):
         return f"{self.amount}"
 
 class Comment(models.Model):
-    body = models.TextField(max_length=1024, default="")
+    body = models.TextField(
+        max_length=1024, 
+        default=""
+        )
+    listing = models.ForeignKey(
+        Listing, 
+        default='0',
+        on_delete=models.CASCADE,
+        related_name="comment_listing"
+        )
+    user = models.ForeignKey(
+        User, 
+        default='0',
+        on_delete=models.CASCADE
+        )
+    Comment_datetime = models.DateTimeField(
+        auto_now_add=True
+    )
+    def __str__(self):
+        return f"{self.user}"

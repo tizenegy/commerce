@@ -165,6 +165,7 @@ def register(request):
 
 def listing(request, item_id):
     item = Listing.objects.get(pk=int(item_id))
+    comments = item.comments.all()
     user = request.user
     if request.method == "POST":
         item = Listing.objects.get(pk=int(item_id))
@@ -215,3 +216,25 @@ def watchlist(request, item_id):
         "on_watchlist": False,
         "message": "Successfully added to watchlist."
     })
+
+def comment(request, item_id):
+    if request.method == "POST":
+        item = Listing.objects.get(pk=int(item_id))
+        user = request.user
+        if user.id is not None:
+            on_watchlist = item.watchlists.filter(pk=int(user.id)).exists()
+            comment = request.POST["comment"]
+            new_comment = Comment()
+            new_comment.user = user
+            new_comment.listing = item
+            new_comment.body = comment
+            new_comment.save()
+            message = "Comment successfully posted."
+        else:
+            message = "You must be logged in to post a comment."
+            on_watchlist = False
+    return render(request, "auctions/listing.html", {
+        "listing": item,
+        "on_watchlist": on_watchlist,
+        "message": message
+        })
