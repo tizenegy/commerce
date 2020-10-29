@@ -194,34 +194,48 @@ def listing(request, item_id):
     })
 
 def watchlist(request, item_id):
-    item = Listing.objects.get(pk=int(item_id))
-    user = request.user
-    if user.id is not None:
-        on_watchlist = item.watchlists.filter(pk=int(user.id)).exists()
-        if on_watchlist:
-            item.watchlists.remove(user)
-            on_watchlist = False
-            return render(request, "auctions/listing.html", {
-                "listing": item,
-                "on_watchlist": on_watchlist,
-                "comments": Comment.objects.filter(listing=item),
-                "message": "Successfully removed from watchlist."
-            })
-        else:
-            item.watchlists.add(user)
-            on_watchlist = True
-            return render(request, "auctions/listing.html", {
-                "listing": item,
-                "on_watchlist": on_watchlist,
-                "comments": Comment.objects.filter(listing=item),
-                "message": "Successfully added to watchlist."
-            })
-    return render(request, "auctions/listing.html", {
-        "listing": item,
-        "on_watchlist": False,
-        "comments": Comment.objects.filter(listing=item),
-        "message": "Successfully added to watchlist."
-    })
+    if request.method == "POST":
+        item = Listing.objects.get(pk=int(item_id))
+        user = request.user
+        if user.id is not None:
+            on_watchlist = item.watchlists.filter(pk=int(user.id)).exists()
+            if on_watchlist:
+                item.watchlists.remove(user)
+                on_watchlist = False
+                return render(request, "auctions/listing.html", {
+                    "listing": item,
+                    "on_watchlist": on_watchlist,
+                    "comments": Comment.objects.filter(listing=item),
+                    "message": "Successfully removed from watchlist."
+                })
+            else:
+                item.watchlists.add(user)
+                on_watchlist = True
+                return render(request, "auctions/listing.html", {
+                    "listing": item,
+                    "on_watchlist": on_watchlist,
+                    "comments": Comment.objects.filter(listing=item),
+                    "message": "Successfully added to watchlist."
+                })
+        return render(request, "auctions/listing.html", {
+            "listing": item,
+            "on_watchlist": False,
+            "comments": Comment.objects.filter(listing=item),
+            "message": "Successfully added to watchlist."
+        })
+    else:
+        pass
+        # user = request.user
+        # current_user = User.objects.filter(pk=int(user.id))
+        # current_user.
+        # Listing.objects.filter(watchlist__user_id = user.id)
+        # # this_user = User.objects.filter(listings_on_watchlist__user_id = user.id)
+        # wls = Listing.objects.filter(Listing.watchlists.user_id == user.id)
+        # all_listings = Listing.objects.all()
+        # all_listings.listings_on_watchlist.filter(pk=int(user.id))
+        # return render(request, "auctions/listing.html", {
+        #     "user_watchlist": wl
+        # })
 
 def comment(request, item_id):
     if request.method == "POST":
