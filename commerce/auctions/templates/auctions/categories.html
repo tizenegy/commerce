@@ -10,17 +10,12 @@
     <div class="card-columns">
             {% for category in categories %}
                     <div class="card"">
-                        <img class="card-img-top" src="{{ category.image_url }}" alt="Card image cap">
+                        {% comment %} <img class="card-img-top" src="{{ category.image_url }}" alt="Card image cap"> {% endcomment %}
                         <div class="card-body">
-                            <h5 class="card-title">{{ category.title }}</h5>
-                        </div>
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item">{{ category.description }}</li>
-                            <li class="list-group-item">Current bid: ${{ category.starting_bid }}</li>
-                            <li class="list-group-item">Category: {{ category.category }}</li>
-                        </ul>
+                            <h5 class="card-title">{{ category.name }}</h5>
+                        </div> 
                         <div class="card-body">
-                            <a href="{% url 'auction:category' category.id %}" class="btn btn-primary">See details</a>
+                            <a href="{% url 'auction:category' category.id %}" class="btn btn-primary">See listings</a>
                         </div>
                     </div>
             {% endfor %}

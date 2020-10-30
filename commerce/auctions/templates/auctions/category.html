@@ -1,7 +1,7 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Active Listings</h2>
+    <h2>Active Listings for category {{ category_name }}</h2>
 {% if message is not None %}
     <div class="alert alert-info" role="alert">
         {{ message }}
@@ -9,7 +9,7 @@
 {% endif %}
     <div class="card-columns">
         {% comment %} <div class="card-group" style="margin: 20px"> {% endcomment %}
-            {% for listing in listings %}
+            {% for listing in category_listings %}
                 {% comment %} <div class="col-sm-4" style="margin: 20px"> {% endcomment %}
                     <div class="card"">
                      {% comment %} style="width: 18rem; {% endcomment %}

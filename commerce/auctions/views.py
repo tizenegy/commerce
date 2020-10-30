@@ -42,7 +42,7 @@ class NewListingForm(forms.Form):
 def index(request):
     all_listings = Listing.objects.all()
     return render(request, "auctions/index.html", {
-        "listings": all_listings
+        "listings": all_listings.filter(is_active=True)
     })
 
 def new_listing(request):
@@ -61,7 +61,7 @@ def new_listing(request):
             all_listings = Listing.objects.all()
             return render(request, "auctions/index.html", {
                 "new_listing_form": NewListingForm(),
-                "listings": all_listings,
+                "listings": all_listings.filter(is_active=True),
                 "message": "Succesfully created new listing."
     })
         else:
@@ -104,7 +104,7 @@ def bids(request, item_id):
     else:
         all_listings = Listing.objects.all()
         return render(request, "auctions/index.html", {
-            "listings": all_listings
+            "listings": all_listings.filter(is_active=True)
     })
     return render(request, "auctions/listing.html", {
         "listing": item,
@@ -176,7 +176,7 @@ def listing(request, item_id):
             item.save()
             all_listings = Listing.objects.all()
             return render(request, "auctions/index.html", {
-                "listings": all_listings
+                "listings": all_listings.filter(is_active=True)
             })
     else:
         item = Listing.objects.get(pk=int(item_id))
@@ -256,10 +256,16 @@ def view_watchlist(request):
         })
 
 def category(request, category_id):
-    pass
+    category_listings = Listing.objects.filter(category=category_id)
+    category_listings = category_listings.filter(is_active=True)
+    cat_name = Category.objects.get(id=category_id).name
+    return render(request, "auctions/category.html", {
+        "category_listings": category_listings,
+        "category_name": cat_name
+        })
 
 def categories(request):
-    categories = Category.objects.all()
+    cats = Category.objects.all()
     return render(request, "auctions/categories.html", {
-        "categories": categories,
+        "categories": cats,
         })
