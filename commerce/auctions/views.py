@@ -254,3 +254,12 @@ def view_watchlist(request):
     return render(request, "auctions/watchlist.html", {
         "user_watchlist": user_wl_items,
         })
+
+def category(request, category_id):
+    pass
+
+def categories(request):
+    categories = Category.objects.all()
+    return render(request, "auctions/categories.html", {
+        "categories": categories,
+        })

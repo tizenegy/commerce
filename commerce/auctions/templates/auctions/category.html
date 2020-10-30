@@ -1,0 +1,34 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Active Listings</h2>
+{% if message is not None %}
+    <div class="alert alert-info" role="alert">
+        {{ message }}
+    </div>
+{% endif %}
+    <div class="card-columns">
+        {% comment %} <div class="card-group" style="margin: 20px"> {% endcomment %}
+            {% for listing in listings %}
+                {% comment %} <div class="col-sm-4" style="margin: 20px"> {% endcomment %}
+                    <div class="card"">
+                     {% comment %} style="width: 18rem; {% endcomment %}
+                        <img class="card-img-top" src="{{ listing.image_url }}" alt="Card image cap">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ listing.title }}</h5>
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">{{ listing.description }}</li>
+                            <li class="list-group-item">Current bid: ${{ listing.starting_bid }}</li>
+                            <li class="list-group-item">Category: {{ listing.category }}</li>
+                        </ul>
+                        <div class="card-body">
+                            <a href="{% url 'auction:listing' listing.id %}" class="btn btn-primary">See details</a>
+                            {% comment %} <a href="{% url 'auction:watchlist' listing.id %}" class="btn btn-primary">Add to watchlist</a> {% endcomment %}
+                        </div>
+                    </div>
+                {% comment %} </div> {% endcomment %}
+            {% endfor %}
+        {% comment %} </div> {% endcomment %}
+    </div>
+{% endblock %}
