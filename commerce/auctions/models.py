@@ -50,7 +50,7 @@ class Listing(models.Model):
         null=False,
         default = True
     )
-    watchlists = models.ManyToManyField(User, blank=True, related_name="listings_on_watchlist")
+    watchlist = models.ManyToManyField(User, blank=True, through='Watchlist', related_name="watchlist_items")
     bids = models.ManyToManyField(User, blank=True, through='Bid', related_name="bids_on_listing")
     comments = models.ManyToManyField(User, blank=True, through='Comment', related_name="comments_on_listing")
     def __str__(self):
@@ -100,3 +100,22 @@ class Comment(models.Model):
     )
     def __str__(self):
         return f"{self.user}"
+
+class Watchlist(models.Model):
+    listing = models.ForeignKey(
+        Listing, 
+        default='0',
+        on_delete=models.CASCADE,
+        related_name="watchlist_listing"
+        )
+    user = models.ForeignKey(
+        User, 
+        default='0',
+        on_delete=models.CASCADE,
+        related_name="watchlist_user"
+        )
+    watchlist_datetime = models.DateTimeField(
+        auto_now_add=True
+    )
+    def __str__(self):
+        return f"Listing: {self.listing} | User: {self.user}"

@@ -9,7 +9,7 @@
     </div>
 {% endif %}
     <div class="card-columns">
-            {% for listing in listings %}
+            {% for listing in user_watchlist %}
                     <div class="card"">
                         <img class="card-img-top" src="{{ listing.image_url }}" alt="Card image cap">
                         <div class="card-body">

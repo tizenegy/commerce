@@ -78,7 +78,7 @@ def bids(request, item_id):
         item = Listing.objects.get(pk=int(item_id))
         user = request.user
         if user.id is not None:
-            on_watchlist = item.watchlists.filter(pk=int(user.id)).exists()
+            on_watchlist = item.watchlist.filter(pk=int(user.id)).exists()
             amount = Decimal(request.POST["bid"].strip(' "'))
             if amount > item.starting_bid:
                 former_bids = Bid.objects.filter(listing=item_id)
@@ -181,7 +181,7 @@ def listing(request, item_id):
     else:
         item = Listing.objects.get(pk=int(item_id))
         if user.id is not None:
-            on_watchlist = item.watchlists.filter(pk=int(user.id)).exists()
+            on_watchlist = item.watchlist.filter(pk=int(user.id)).exists()
             return render(request, "auctions/listing.html", {
                 "listing": item,
                 "comments": Comment.objects.filter(listing=item),
@@ -194,13 +194,12 @@ def listing(request, item_id):
     })
 
 def watchlist(request, item_id):
-    if request.method == "POST":
         item = Listing.objects.get(pk=int(item_id))
         user = request.user
         if user.id is not None:
-            on_watchlist = item.watchlists.filter(pk=int(user.id)).exists()
+            on_watchlist = item.watchlist.filter(pk=int(user.id)).exists()
             if on_watchlist:
-                item.watchlists.remove(user)
+                item.watchlist.remove(user)
                 on_watchlist = False
                 return render(request, "auctions/listing.html", {
                     "listing": item,
@@ -209,7 +208,7 @@ def watchlist(request, item_id):
                     "message": "Successfully removed from watchlist."
                 })
             else:
-                item.watchlists.add(user)
+                item.watchlist.add(user)
                 on_watchlist = True
                 return render(request, "auctions/listing.html", {
                     "listing": item,
@@ -223,26 +222,13 @@ def watchlist(request, item_id):
             "comments": Comment.objects.filter(listing=item),
             "message": "Successfully added to watchlist."
         })
-    else:
-        pass
-        # user = request.user
-        # current_user = User.objects.filter(pk=int(user.id))
-        # current_user.
-        # Listing.objects.filter(watchlist__user_id = user.id)
-        # # this_user = User.objects.filter(listings_on_watchlist__user_id = user.id)
-        # wls = Listing.objects.filter(Listing.watchlists.user_id == user.id)
-        # all_listings = Listing.objects.all()
-        # all_listings.listings_on_watchlist.filter(pk=int(user.id))
-        # return render(request, "auctions/listing.html", {
-        #     "user_watchlist": wl
-        # })
 
 def comment(request, item_id):
     if request.method == "POST":
         item = Listing.objects.get(pk=int(item_id))
         user = request.user
         if user.id is not None:
-            on_watchlist = item.watchlists.filter(pk=int(user.id)).exists()
+            on_watchlist = item.watchlist.filter(pk=int(user.id)).exists()
             cmt = request.POST["comment"]
             new_comment = Comment()
             new_comment.user = user
@@ -258,4 +244,13 @@ def comment(request, item_id):
         "comments": Comment.objects.filter(listing=item),
         "on_watchlist": on_watchlist,
         "message": message
+        })
+
+def view_watchlist(request):
+    user_wl = Watchlist.objects.filter(user=request.user)
+    user_wl_items = list()
+    for entry in user_wl:
+        user_wl_items.append(entry.listing)
+    return render(request, "auctions/watchlist.html", {
+        "user_watchlist": user_wl_items,
         })
