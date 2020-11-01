@@ -37,6 +37,7 @@ class NewListingForm(forms.Form):
         queryset=Category.objects.all(),
         required=False
         )
+    # owner = forms.CharField(widget=forms.HiddenInput())
 
 
 def index(request):
@@ -50,6 +51,7 @@ def new_listing(request):
         form = NewListingForm(request.POST)
         if form.is_valid():
             listing = Listing()
+            listing.owner = request.user
             listing.title = form.cleaned_data["title"]
             listing.description = form.cleaned_data["description"]
             listing.starting_bid = form.cleaned_data["starting_bid"]
@@ -80,7 +82,7 @@ def bids(request, item_id):
         if user.id is not None:
             on_watchlist = item.watchlist.filter(pk=int(user.id)).exists()
             amount = Decimal(request.POST["bid"].strip(' "'))
-            if amount > item.starting_bid:
+            if amount >= item.starting_bid:
                 former_bids = Bid.objects.filter(listing=item_id)
                 former_max_dict = former_bids.aggregate(Max('amount'))
                 former_max_bid = former_max_dict.get("amount__max", 0.00)

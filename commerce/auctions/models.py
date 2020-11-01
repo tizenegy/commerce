@@ -77,7 +77,7 @@ class Bid(models.Model):
         auto_now_add=True
     )
     def __str__(self):
-        return f"{self.amount}"
+        return f"{self.user} bids {self.amount} for {self.listing}"
 
 class Comment(models.Model):
     body = models.TextField(
@@ -99,7 +99,7 @@ class Comment(models.Model):
         auto_now_add=True
     )
     def __str__(self):
-        return f"{self.user}"
+        return f"{self.user} on {self.listing}"
 
 class Watchlist(models.Model):
     listing = models.ForeignKey(
