@@ -51,16 +51,19 @@
         {% endif %}
         {% if request.user.id is listing.owner.id %}
             <form action="{% url 'auction:listing' listing.id %}" method="post">
+                <br></br>
                 {% csrf_token %}
                 <input class="btn btn-primary" type="submit" value="Close this auction">
             </form>
         {% endif %}
     {% endif %}
 </div>
+<br></br>
+<br></br>
 
 <h2>Comments</h2>
 
-{% if listing.is_active %}
+{% if listing.is_active and request.user.id is not None %}
     <form action="{% url 'auction:comment' listing.id %}" method="post">
         {% csrf_token %}
         <input class="form-control" type="text" name="comment" placeholder="Enter comment here">
